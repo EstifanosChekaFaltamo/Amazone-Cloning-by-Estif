@@ -19,10 +19,9 @@ function Products() {
     return (
         <section className={classes.products_container}>
             {
-
                 // By adding "products &&"" before the map function call, you are checking if categoryImage is not undefined or null before attempting to map over it. This can help prevent the "Cannot read properties of undefined" error in your code.
-                products && products.map((singleProduct) => {
-                    return <ProductsCard product={singleProduct} />
+                products && products.map((singleProduct, id) => {
+                    return <ProductsCard product={singleProduct} key={id} />
                 })
             }
         </section>
