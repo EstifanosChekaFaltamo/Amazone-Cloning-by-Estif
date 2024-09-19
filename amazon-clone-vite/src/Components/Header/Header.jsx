@@ -7,6 +7,8 @@ import classes from "./Header.module.css"
 
 
 function Header() {
+    const x = 2;
+    console.log(x);
     return (
         <>
             <section >
