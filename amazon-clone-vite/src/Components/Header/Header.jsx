@@ -1,16 +1,22 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
 import { BsSearch } from "react-icons/bs";
 import { BiCart } from "react-icons/bi";
 import { SlLocationPin } from "react-icons/sl";
 import LowerHeader from './LowerHeader';
 import classes from "./Header.module.css"
+import { DataContext } from '../DataProvider/DataProvider';
+import { auth } from "../../Utility/FireBase"
 
 
 function Header() {
 
+    const [{ user, basket }, dispatch] = useContext(DataContext)
+    const totalItem = basket?.reduce((amount, item) => {
+        return item.amount + amount
+    }, 0)
     return (
-        <>
+        <section className={classes.fixed}>
             <section >
                 <div className={classes.header_container}>
                     <div className={classes.logo_container}>
@@ -35,7 +41,7 @@ function Header() {
                             <option value="">All</option>
                         </select>
                         <input type="text" name="" id="" placeholder='search product' />
-                        <BsSearch size={25} />
+                        <BsSearch size={38} />
                     </div>
                     {/* order Container */}
                     <div className={classes.order_container}>
@@ -49,10 +55,18 @@ function Header() {
                             </Link>
                         </div>
                         {/* three componenets */}
-                        <Link to="">
+                        <Link to={!user && "/Auth"}>
                             <div>
-                                <p>Sign In</p>
-                                <span>Account & Lists</span>
+
+                                {user ? (<>
+                                    <p>Hello {user?.email?.split("@")[0]}</p>
+                                    <span onClick={() => auth.signOut()}> SignOut </span>
+                                </>) : (
+                                    <>
+                                        <p>Hello, Sign In</p>
+                                        <span>Account & Lists</span>
+                                    </>
+                                )}
                             </div>
                         </Link>
                         {/* orders */}
@@ -63,13 +77,13 @@ function Header() {
                         {/* cart */}
                         <Link to="/cart" className={classes.cart}>
                             <BiCart size={35} />
-                            <span>0</span>
+                            <span>{totalItem}</span>
                         </Link>
                     </div>
                 </div>
-            </section>
+            </section >
             <LowerHeader />
-        </>
+        </section >
     )
 }
 

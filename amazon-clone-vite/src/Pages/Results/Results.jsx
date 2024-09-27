@@ -6,9 +6,11 @@ import { useParams } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import axios from 'axios'
 import { productUrl } from '../../Api/Endpoints'
+import Loader from '../../Components/Loader/Loader'
 
 function Results() {
   const [results, setResults] = useState([]);
+  const [isloading, setisloading] = useState(false)
   const { categoryName } = useParams()
   useEffect(() => {
     axios.get(`${productUrl}/products/category/${categoryName}`)
@@ -25,11 +27,11 @@ function Results() {
         <h1 style={{ padding: "30px" }}>Results</h1>
         <p style={{ padding: "30px" }}>Category/{categoryName}</p>
         <hr />
-        <div className={classes.products_container}>
+        {isloading ? (<Loader />) : (<div className={classes.products_container}>
           {results.map((product) => {
-            return <ProductsCard key={product.id} product={product} />
+            return <ProductsCard key={product.id} product={product} renderAdd={true} renderDesc={false} />
           })}
-        </div>
+        </div>)}
       </section>
     </LayOut>
   )
