@@ -8,9 +8,12 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const { Message } = require("firebase-functions/v2/pubsub");
+const { setGlobalOptions } = require("firebase-functions");
 const stripe = require("stripe")(process.env.STRIPE_KEY)
 
 const app = express();
+setGlobalOptions({ maxInstances: 10 })
+
 app.use(cors({ origin: true }));
 app.use(express.json());
 
