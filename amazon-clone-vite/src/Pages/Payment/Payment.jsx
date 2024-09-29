@@ -10,11 +10,12 @@ import { Card } from '@mui/material';
 import { ClipLoader } from 'react-spinners';
 import { db } from '../../Utility/FireBase';
 import { useNavigate } from 'react-router-dom';
+import { Type } from '../../Utility/Action.type';
 
 
 function Payment() {
 
-    const [{ user, basket }] = useContext(DataContext);
+    const [{ user, basket }, dispatch] = useContext(DataContext);
     console.log(user);
     const totalItem = basket?.reduce((amount, item) => {
         return item.amount + amount
@@ -61,13 +62,21 @@ function Payment() {
 
             // 3. After confirmation -->Order firestore database save, clear basket instead in order page exists.
 
-            await db.collection("users").doc(user.uid).collection("orders").doc(paymentIntent.id).set({
-                basket: basket,
-                amount: paymentIntent.amount,
-                created: paymentIntent.created,
+            await db.collection("users")
+                .doc(user.uid)
+                .collection("orders")
+                .doc(paymentIntent.id).
+                set({
+                    basket: basket,
+                    amount: paymentIntent.amount,
+                    created: paymentIntent.created,
+                });
+
+            // Empty the Basket!!!!!!!!!!
+            dispatch({
+                type: Type.EMPTY_BASKET,
+
             });
-
-
             setProcessing(false)
             navigate("/orders", { state: { msg: "You have placed new Order" } })
 
